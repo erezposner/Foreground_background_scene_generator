@@ -10,7 +10,7 @@ backgrounds_files = glob.glob(backgrounds_folder_path + '\*')
 objects_files = glob.glob(objects_folder_path + '\*')
 count = 0
 s = 2
-for i in range(2):
+for i in range(4):
     for background in backgrounds_files:
         for object in objects_files:
             try:
@@ -27,7 +27,7 @@ for i in range(2):
                 object = cv2.imread(object, -1)
                 sca = np.random.uniform(2,4)
 
-                dim = (object.shape[1] // sca, object.shape[0] // sca)
+                dim = (int(object.shape[1] // sca), int(object.shape[0] // sca))
                 object = cv2.resize(object, dim, interpolation=cv2.INTER_AREA)
 
                 object[object[..., 3] == 0] = 0
@@ -67,4 +67,5 @@ for i in range(2):
                 cv2.imwrite(str(output_folder / gt_folder / 'gt{:05d}.png'.format(count)), mask_bin)
                 count = count + 1
             except:
+                print('err')
                 pass
