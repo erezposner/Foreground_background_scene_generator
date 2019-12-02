@@ -8,11 +8,13 @@ objects_folder_path = r"C:\Erez.Posner_to_NAS\Foreground_background_scene_genera
 output_folder_final = Path("C:\Erez.Posner_to_NAS\Foreground_background_scene_generator\output")
 backgrounds_files = glob.glob(backgrounds_folder_path + '\*')
 objects_files = glob.glob(objects_folder_path + '\*')
-count = 0
+
 s = 2
 for i in range(4):
     for background in backgrounds_files:
+        count = 1
         for object in objects_files:
+            print('background - {} , object - {}'.format(background,object))
             try:
                 output_folder_name = Path(background).stem
                 output_folder = output_folder_final / str(output_folder_name)
@@ -63,9 +65,10 @@ for i in range(4):
                 plt.imshow(output.astype(np.uint8))
                 # plt.show()
                 plt.close('all')
-                cv2.imwrite(str(output_folder / in_folder /  'in{:05d}.png'.format(count)), output)
-                cv2.imwrite(str(output_folder / gt_folder / 'gt{:05d}.png'.format(count)), mask_bin)
+                cv2.imwrite(str(output_folder / in_folder /  'in{:06d}.png'.format(count)), output)
+                cv2.imwrite(str(output_folder / gt_folder / 'gt{:06d}.png'.format(count)), mask_bin)
                 count = count + 1
             except:
                 print('err')
                 pass
+print('done')
