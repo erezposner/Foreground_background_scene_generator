@@ -3,6 +3,7 @@ import numpy as np
 import glob
 import cv2
 from pathlib import Path
+
 backgrounds_folder_path = r"C:\Erez.Posner_to_NAS\Foreground_background_scene_generator\backgrounds"
 objects_folder_path = r"C:\Erez.Posner_to_NAS\Foreground_background_scene_generator\objects"
 output_folder_final = Path("C:\Erez.Posner_to_NAS\Foreground_background_scene_generator\output")
@@ -14,20 +15,20 @@ for i in range(4):
     for background in backgrounds_files:
         count = 1
         for object in objects_files:
-            print('background - {} , object - {}'.format(background,object))
+            print('background - {} , object - {}'.format(background, object))
             try:
                 output_folder_name = Path(background).stem
                 output_folder = output_folder_final / str(output_folder_name)
-                output_folder.mkdir(parents=True,exist_ok = True)
+                output_folder.mkdir(parents=True, exist_ok=True)
                 in_folder = output_folder / 'input'
                 gt_folder = output_folder / 'groundtruth'
-                in_folder.mkdir(parents=True,exist_ok = True)
-                gt_folder.mkdir(parents=True,exist_ok = True)
+                in_folder.mkdir(parents=True, exist_ok=True)
+                gt_folder.mkdir(parents=True, exist_ok=True)
                 back = cv2.imread(background, -1)
                 dim = (back.shape[1] // s, back.shape[0] // s)
                 back = cv2.resize(back, dim, interpolation=cv2.INTER_AREA)
                 object = cv2.imread(object, -1)
-                sca = np.random.uniform(2,4)
+                sca = np.random.uniform(2, 4)
 
                 dim = (int(object.shape[1] // sca), int(object.shape[0] // sca))
                 object = cv2.resize(object, dim, interpolation=cv2.INTER_AREA)
@@ -44,7 +45,8 @@ for i in range(4):
                     np.random.randint(0, back.shape[0] - img_mask.shape[0]),
                     np.random.randint(0, back.shape[1] - img_mask.shape[1]))
 
-                mask[position[0]:position[0] + img_mask.shape[0], position[1]:position[1] + img_mask.shape[1], :] = object
+                mask[position[0]:position[0] + img_mask.shape[0], position[1]:position[1] + img_mask.shape[1],
+                :] = object
 
                 mask_bin = mask.copy()
                 mask_bin[mask_bin > 0] = 255
@@ -65,8 +67,13 @@ for i in range(4):
                 plt.imshow(output.astype(np.uint8))
                 # plt.show()
                 plt.close('all')
-                cv2.imwrite(str(output_folder / in_folder /  'in{:06d}.png'.format(count)), output)
-                cv2.imwrite(str(output_folder / gt_folder / 'gt{:06d}.png'.format(count)), mask_bin)
+
+                if count > 1:
+                    cv2.imwrite(str(output_folder / in_folder / 'in{:06d}.png'.format(count)), output)
+                    cv2.imwrite(str(output_folder / gt_folder / 'gt{:06d}.png'.format(count)), mask_bin)
+                else:
+                    cv2.imwrite(str(output_folder / in_folder / 'in{:06d}.png'.format(count)), back)
+                    cv2.imwrite(str(output_folder / gt_folder / 'gt{:06d}.png'.format(count)), np.zeros(mask_bin.shape))
                 count = count + 1
             except:
                 print('err')
