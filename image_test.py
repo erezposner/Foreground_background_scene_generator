@@ -6,13 +6,15 @@ from pathlib import Path
 
 backgrounds_folder_path = r"C:\Erez.Posner_to_NAS\Foreground_background_scene_generator\backgrounds"
 objects_folder_path = r"C:\Erez.Posner_to_NAS\Foreground_background_scene_generator\objects"
-output_folder_final = Path("C:\Erez.Posner_to_NAS\Foreground_background_scene_generator\output")
+output_folder_final = Path("C:\Erez.Posner_to_NAS\Foreground_background_scene_generator\output1")
 backgrounds_files = glob.glob(backgrounds_folder_path + '\*')
 objects_files = glob.glob(objects_folder_path + '\*')
 
 s = 2
 for i in range(4):
     for background in backgrounds_files:
+        # fgbg = cv2.createBackgroundSubtractorMOG2()
+
         count = 1
         for object in objects_files:
             print('background - {} , object - {}'.format(background, object))
@@ -29,7 +31,7 @@ for i in range(4):
                 back = cv2.resize(back, dim, interpolation=cv2.INTER_AREA)
                 object = cv2.imread(object, -1)
                 sca = np.random.uniform(2, 4)
-
+                sca=1
                 dim = (int(object.shape[1] // sca), int(object.shape[0] // sca))
                 object = cv2.resize(object, dim, interpolation=cv2.INTER_AREA)
 
@@ -66,10 +68,15 @@ for i in range(4):
                 output[mask_bin == 255] = mask[mask_bin == 255]
                 plt.imshow(output.astype(np.uint8))
                 # plt.show()
-                plt.close('all')
+                # plt.close('all')
+                #
+                # fgmask = fgbg.apply(output)
+                #
+                # plt.imshow(fgmask)
 
                 if count > 1:
                     cv2.imwrite(str(output_folder / in_folder / 'in{:06d}.png'.format(count)), output)
+                    cv2.imwrite(str(output_folder / gt_folder / 'gt{:06d}.png'.format(count)), mask_bin)
                     cv2.imwrite(str(output_folder / gt_folder / 'gt{:06d}.png'.format(count)), mask_bin)
                 else:
                     cv2.imwrite(str(output_folder / in_folder / 'in{:06d}.png'.format(count)), back)
